@@ -20,9 +20,10 @@ if not os.path.exists(target_dir2):
 if not os.path.exists(target_dir3):
     os.makedirs(target_dir3)
 
-pages=[]
-names=[]
-for each in os.listdir(target_dir):
+books=sorted(os.listdir(target_dir),key=lambda x: os.path.getmtime(os.path.join(target_dir, x)),reverse=True)
+# books=[book for book in books if book.endswith(".pdf")]
+
+for each in books:
     if each.endswith(".pdf"):
         pdf_fd=open(f"{target_dir}{os.sep}{each}","rb")
         pdf_rd = PyPDF2.PdfFileReader(pdf_fd)
@@ -58,6 +59,9 @@ for each in os.listdir(target_dir):
                     pix1.writePNG(f"{target_dir3}{os.sep}page{pick_page_idx+1}_{each.strip('.pdf')}.png")
                     pix1 = None
                 pix = None
+        with open(f"{target_dir3}{os.sep}pages_ab_rf.txt","a",encoding="utf-8") as f:
+            f.write(f"RF_Page:\t\t\tAB_Page:{pick_page_idx+1}\t\t\tFilename:{each}\n")
+        
         print("one done.")
 
 print("all done.")

@@ -39,7 +39,7 @@ for each in os.listdir(target_dir):
             gray = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         gray = 255 - gray
 
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 1000))
         dilate = cv2.dilate(gray, kernel, iterations=4)
 
         cnts = cv2.findContours(dilate, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -49,14 +49,22 @@ for each in os.listdir(target_dir):
         for c in cnts:
             x, y, w, h = cv2.boundingRect(c)
             ROI = original[y:y + h, x:x + w]
-            data = pytesseract.image_to_string(ROI, lang='eng', config='--psm 10')
+            data = pytesseract.image_to_string(ROI, lang='eng',config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')
             if data.isdigit():
                 print('Page #: ', data)
                 cv2.imwrite("ROI_{}.png".format(image_number), ROI)
                 image_number += 1
 
+        # cv2.namedWindow('gray',cv2.WINDOW_NORMAL)
+        cv2.namedWindow('gray',0)
         cv2.imshow('gray', gray)
+
+        # cv2.namedWindow('dilate',cv2.WINDOW_NORMAL)
+        cv2.namedWindow('dilate',0)
         cv2.imshow('dilate', dilate)
+
+        # cv2.namedWindow('original',cv2.WINDOW_NORMAL)
+        cv2.namedWindow('original',0)
         cv2.imshow('original', original)
         cv2.waitKey()
 
