@@ -9,12 +9,15 @@ with open(ab_rf_path,"r",encoding="utf-8") as f:
 
 for each_idx,each_line in enumerate(lines):
     rf_zone,ab_zone,filename_zone=each_line.split("\t"*3)
+    ab_num=int(ab_zone.split(":")[1])
     prompt=f"{filename_zone}\n{rf_zone}\t"
     rf_input=input(prompt)
     while True:
         if rf_input.isdigit():
             rf_zone+=rf_input
-            new_line=f"{rf_zone}\t\t\t{ab_zone}\t\t\t{filename_zone}"
+            delta_num=ab_num-int(rf_input)
+            delta_zone=f"DT_Page:{delta_num}"
+            new_line=f"{delta_zone}\t\t\t{rf_zone}\t\t\t{ab_zone}\t\t\t{filename_zone}"
             lines[each_idx]=new_line
             break
 

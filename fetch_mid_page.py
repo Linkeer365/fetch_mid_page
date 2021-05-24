@@ -3,6 +3,8 @@ import os
 import io
 from PIL import Image
 
+import time
+
 # 必须要和PyMupdf一起安装才能用...
 
 import fitz
@@ -24,7 +26,7 @@ books=sorted(os.listdir(target_dir),key=lambda x: os.path.getmtime(os.path.join(
 # books=[book for book in books if book.endswith(".pdf")]
 
 for each in books:
-    if each.endswith(".pdf"):
+    if each.endswith(".pdf") and each.startswith("typetype1"):
         pdf_fd=open(f"{target_dir}{os.sep}{each}","rb")
         pdf_rd = PyPDF2.PdfFileReader(pdf_fd)
         pdf_len=pdf_rd.getNumPages()
@@ -61,7 +63,9 @@ for each in books:
                 pix = None
         with open(f"{target_dir3}{os.sep}pages_ab_rf.txt","a",encoding="utf-8") as f:
             f.write(f"RF_Page:\t\t\tAB_Page:{pick_page_idx+1}\t\t\tFilename:{each}\n")
-        
+
+        # 因为你下一步要翻阅图片的，所以这个时候你要区分出明显的一个时间差！
+        time.sleep(1)
         print("one done.")
 
 print("all done.")
